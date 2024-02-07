@@ -38,11 +38,6 @@ namespace ImmunizNation.Controllers
             _emailService = mailService;
         }
 
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-
         public IActionResult Privacy()
         {
             return View();
@@ -98,37 +93,6 @@ namespace ImmunizNation.Controllers
                 return RedirectToAction("Error");
             }
             return RedirectToPage("/Index");
-
-            //var pdf = await _service.CertificateOfAttendanceAsync(user);
-            //if (pdf != null)
-            //{
-            //    using (var stream = new MemoryStream())
-            //    {
-            //        pdf.Save(stream, false);
-
-            //        string certificateName = user.AccountType == AccountTypes.GeneralPractitioner
-            //            ? "Certificate of Completion"
-            //            : "Statement of Attendance";
-
-            //        var attachments = new List<EmailAttachment>
-            //        {
-            //            new EmailAttachment
-            //            {
-            //                Name = _service.GenerateCertificateName(user),
-            //                ByteArray = stream.ToArray(),
-            //                ContentType = new ContentType("application", "pdf")
-            //            }
-            //        };
-
-            //        string htmlMessage = $"<p>Congratulations {user.FirstName} {user.LastName}</p><p>Your { certificateName } is attached.</p>";
-
-            //        _emailService.Send(user.Email, $"ImmunizNation - {certificateName}", htmlMessage, attachments);
-
-            //        return RedirectToPage("/Index");
-
-            //    }
-            //}
-
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -136,8 +100,5 @@ namespace ImmunizNation.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
-        
-
     }
 }

@@ -429,25 +429,6 @@ namespace ImmunizNation.Client.Controllers
                 currentColumn = 1;
             }
 
-            //foreach (var resource in resourceDownloads)
-            //{
-            //    // add the columns header
-            //    currentRow++;
-            //    cell = worksheet.Cell(currentRow, currentColumn);
-            //    cell.Value = resource;
-            //    cell.Style.Alignment.WrapText = true;
-            //    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-
-            //    currentColumn++;
-
-            //    cell = worksheet.Cell(currentRow, currentColumn);
-            //    //cell.Value = resource.DownloadCount;
-            //    cell.Style.Alignment.WrapText = true;
-            //    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
-
-            //    currentColumn = 1;
-            //}
-
             return worksheet;
         }
     }
