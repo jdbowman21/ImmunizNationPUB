@@ -1,5 +1,4 @@
-# ImmunizNationPUB
-
+# Portfolio - ImmunizNation
 Practical Strategies for Recommending Immunizations to Patients at Risk of Herpes Zoster.
 
 ## Getting Started
