@@ -6,8 +6,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ImmunizNation.Client.Models
 {
-    
-
     public class ReflectiveQuestionExam
     {
         [Key]
