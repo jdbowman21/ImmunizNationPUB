@@ -1,0 +1,43 @@
+.login-background-img {
+  position:relative;
+  background-position:100%;
+  background-size: 50%;
+  display:block;
+  flex-direction: column;
+  justify-content: center;
+  position:absolute;
+  left:0;
+  top: 0;
+  height:100%;
+  width:100%;
+
+}
+
+@include  media-breakpoint-down(lg) {
+  .login-background-img {
+    background-position: center;
+    background-size: 150%;
+  }
+}
+
+
+.login-container,
+.register-container {
+  display:flex;
+  height:100%;
+  width:100%;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  overflow:none;
+}
+
+
+
+.login-card {
+  width:100%;
+}
+  
+.login-branding {
+  margin-bottom: 24px;
+}

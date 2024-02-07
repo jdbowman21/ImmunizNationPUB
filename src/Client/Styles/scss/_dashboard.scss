@@ -1,0 +1,48 @@
+.user-info-wrapper {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-info {
+  font-size: 14px;
+  display: inline-block;
+  margin-right: 24px;
+  position: relative;
+
+  &:not(:last-child) {
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -16px;
+      margin-top: -2px;
+      display: block;
+      width: 4px;
+      height: 4px;
+      background-color: #ddd;
+      border-radius: 50%;
+      z-index: 1;
+    }
+  }
+}
+
+.test-results-wrapper {
+  display: flex;
+  flex-direction: row;
+  column-count: 3;
+  align-items: top;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+
+.download-area {
+  display:flex;
+  flex-direction: row;
+
+  form {
+    margin-right:16px;
+  }
+}

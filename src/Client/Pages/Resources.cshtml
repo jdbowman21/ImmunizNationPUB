@@ -1,0 +1,39 @@
+﻿@page
+@model ImmunizNation.Client.Pages.ResourcesModel
+@{
+    ViewData["Title"] = "Resources";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>
+                <strong>ImmunizNation Resources</strong>
+            </h4>
+
+            <p>Consider the following resources for use in clinical practice when discussing HZ vaccination with patients.</p>
+            <hr/>
+
+             <div class="row">
+                @foreach (var resource in Model.Resources)
+                {
+                    <div class="col col-sm-12 col-md-4">
+                        <div class="card shadow-sm" style="overflow:hidden">
+                          <img src="@resource.ThumbnailPath" class="card-img-top" alt="...">
+                          <div class="card-body border-top">
+                              <div>
+                                  <span class="badge badge-info">@resource.FileType.ToUpper()</span>
+                              </div>
+                            <h5 class="card-title">@resource.Title</h5>
+                            <form asp-controller="Resource" asp-action="GetResource" asp-route-resourceId="@resource.Id" method="post">
+                                    <button type="submit" class="btn btn-primary">Download</button>
+                                </form>
+                          </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

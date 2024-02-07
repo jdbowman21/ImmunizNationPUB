@@ -1,0 +1,293 @@
+﻿@page
+@model ImmunizNation.Client.Pages.SurveyModel
+@using EInputType = ImmunizNation.Client.Models.EvaluationSurvey.InputType;
+@using System.Linq;
+@{
+    ViewData["Title"] = "Evaluation Survey";
+    int questionCounter = 0;
+}
+
+<div class="container">
+   
+    <div class="col-md-12">
+        <form method="post">
+            <h4>
+                <strong>Evaluation Survey</strong>
+            </h4>
+            <p>To help improve this and other future online learning programs, please fill out the below evaluation questions.</p>
+
+            <div class="alert alert-info">
+                Practical resources have been developed for the ImmunizNation program, including a summary infographic, counselling guide and email reminder template. To view and download these additional resources, <a asp-page="Resources">click here.</a>
+            </div>
+
+            <hr />
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            @for (int i = 0; i < Model.SurveyGroups.Count; i++)
+            {
+                var group = Model.SurveyGroups[i];
+
+                <input asp-for="@Model.SurveyGroups[i].Id" hidden="hidden" />
+                <input asp-for="@Model.SurveyGroups[i].Description" hidden="hidden" />
+                <input asp-for="@Model.SurveyGroups[i].Title" hidden="hidden" />
+
+                <div class="survey-group" id="survey-group-@i">
+                    @if (!String.IsNullOrEmpty(Model.SurveyGroups[i].Title))
+                    {
+                        <h4>
+                            <strong>@Model.SurveyGroups[i].Title</strong>
+                        </h4>
+                    }
+                    @if (!String.IsNullOrEmpty(Model.SurveyGroups[i].Description))
+                    {
+                        <p>@Html.Raw(Model.SurveyGroups[i].Description)</p>
+                    }
+                    @if (!String.IsNullOrEmpty(Model.SurveyGroups[i].Title) && !String.IsNullOrEmpty(group.Description))
+                    {
+                        <hr />
+                    }
+
+                    @for (int j = 0; j < Model.SurveyGroups[i].Questions.Count; j++)
+                    {
+                        var question = Model.SurveyGroups[i].Questions[j];
+                        questionCounter++;
+
+                        <input asp-for="@Model.SurveyGroups[i].Questions[j].Id" hidden="hidden" />
+                        <input asp-for="@Model.SurveyGroups[i].Questions[j].Description" hidden="hidden" />
+                        <input asp-for="@Model.SurveyGroups[i].Questions[j].InputType" hidden="hidden" />
+                        <input asp-for="@Model.SurveyGroups[i].Questions[j].GroupId" hidden="hidden" />
+
+                        <p>
+                            <strong>@(questionCounter). @Html.Raw(question.Description)</strong>
+                        </p>
+
+                        @switch (question.InputType)
+                        {
+                            case EInputType.Text:
+                            <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" asp-for="@Model.SurveyGroups[i].Questions[j].UserAnswer" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                break;
+                            case EInputType.TextArea:
+                                <div class="form-group">
+                                    <textarea asp-for="@Model.SurveyGroups[i].Questions[j].UserAnswer" rows="3" class="form-control"></textarea>
+                                </div>
+                                break;
+                            case EInputType.Radio:
+                                <div class="form-group">
+
+                                    @for (int k = 0; k < question.Options.Count(); k++)
+                                    {
+                                        var option = question.Options[k];
+                                        <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Id" hidden="hidden" />
+                                        <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Description" hidden="hidden" />
+                                        <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].QuestionId" hidden="hidden" />
+                                        <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Question" hidden="hidden" />
+                                        <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Value" hidden="hidden" />
+
+                                        <div class="radio-button-group">
+
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" asp-for="@Model.SurveyGroups[i].Questions[j].UserAnswer" value="@option.Value">
+                                                    @option.Description
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                    }
+                                </div>
+                                break;
+                            case EInputType.Select:
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        @for (int k = 0; k < Model.SurveyGroups[i].Questions[j].Options.Count; k++)
+                                        {
+                                            // We have to rebind any select options this way since we don't have control of the tagHelper.
+                                            <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Id" hidden="hidden" />
+                                            <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Description" hidden="hidden" />
+                                            <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].QuestionId" hidden="hidden" />
+                                            <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Question" hidden="hidden" />
+                                            <input asp-for="@Model.SurveyGroups[i].Questions[j].Options[k].Value" hidden="hidden" />
+                                        }
+                                        <div class="form-group">
+                                            <select asp-for="@Model.SurveyGroups[i].Questions[j].UserAnswer" asp-items="@(question.AsSelectList())" class="form-control">
+                                                <option value="">Select an Option</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                                break;
+                            case EInputType.DateTime:
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="input-group date">
+                                                <input type="date" class="form-control" asp-for="@Model.SurveyGroups[i].Questions[j].UserAnswer">
+           
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                break;
+                            //case EInputType.Checkbox:
+                            //    break;
+                            default:
+                                <p class="text-muted">
+                                    <em>not setup: @question.InputType.ToString()</em>
+                                </p>
+                                break;
+                        }
+                    }
+
+
+                </div>
+
+
+            }
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+
+    
+
+    @*<script src="~/lib/bulma-calendar-master/dist/js/bulma-calendar.min.js"></script>
+    <script>
+        var calendars = bulmaCalendar.attach('[type="date"]', {
+        });
+        for (var i = 0; i < calendars.length; i++) {
+            console.log(calendars[i]);
+        }
+    </script>*@
+}
+
+@*<div class="background-img login-background-img"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+           
+            <form method="post">
+
+                <h4>
+                    <strong>Evaluation Survey</strong>
+                </h4>
+                <p class="lead">To help improve this and other future online learning programs, please fill out the below evaluation questions.</p>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    <label>
+                        <strong>@(i+1). @Model.Questions[i].Description</strong>
+                    </label>
+
+                    <input asp-for="Questions[i].Id" hidden="hidden" />
+                    <input asp-for="Questions[i].Description" hidden="hidden" />
+                    <input asp-for="Questions[i].InputType" hidden="hidden" />
+
+
+                    @if (Model.Questions[i].InputType == ImmunizNation.Client.Models.EvaluationSurvey.InputType.TextArea)
+                    {
+                        <div class="form-group">
+                            <textarea rows="3" asp-for="Questions[i].UserAnswer" class="form-control"></textarea>
+                        </div>
+                    }
+                    else if (Model.Questions[i].InputType == ImmunizNation.Client.Models.EvaluationSurvey.InputType.Radio)
+                    {
+                        <div class="form-group">
+                            <div class="radio-button-group">
+                                @if (Model.Questions[i].QuestionAnswers != null)
+                                {
+
+                                    for (int j = 0; j < Model.Questions[i].QuestionAnswers.Count; j++)
+                                    {
+                                        Html.HiddenFor(m => m.Questions[i].QuestionAnswers[j].Id);
+
+                                     
+                                        <input asp-for="Questions[i].QuestionAnswers[j].Description" hidden="hidden" />
+
+                                        <div class="form-check">
+                                            <label>
+                                                <input class="form-check-input" type="radio" asp-for="@Model.Questions[i].UserAnswer" value="@Model.Questions[i].QuestionAnswers[j].Id" />
+                                                <span class="form-check-label">@Model.Questions[i].QuestionAnswers[j].Description</span>
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <input type="@Model.Questions[i].InputType" asp-for="Questions[i].UserAnswer" value="@Model.Questions[i].UserAnswer" class="form-control" />
+                        </div>
+                    }
+
+                    <input asp-for="Questions[i].UserAnswer" hidden="hidden" />
+                }
+
+                <button type="submit" class="btn btn-success">Submit</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (Model.ShowSubmitModal)
+{
+    <input id="should-show-modal" value="True" hidden="hidden" type="hidden" />
+
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>Thank you for your feedback.</p>
+                </div>
+                <div class="modal-footer">
+                    <a asp-page="./Index" class="btn btn-primary btn-block" >Return to dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+
+    <script>
+
+        showModal("should-show-modal");
+
+        function showModal(input) {
+            //var submitResultModal = document.getElementById("should-show-modal");
+            var submitResultModal = document.getElementById(input);
+            if (submitResultModal) {
+                var showModal = submitResultModal.value === "True" ? true : false;
+
+                $('#modal').modal({
+                    show: showModal,
+                    backdrop: 'static'
+                });
+            }
+        }
+    </script>
+
+}*@

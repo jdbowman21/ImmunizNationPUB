@@ -1,0 +1,158 @@
+﻿@page
+@model ImmunizNation.Client.Pages.ReflectiveTestModel
+
+@{
+    ViewData["Title"] = "Reflective Activity";
+}
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            <h4>
+                <strong>ImmunizNation Reflective Activity</strong>
+            </h4>
+
+            <p>Please complete the below Reflective Activity following completion of the ImmunizNation accredited program.</p>
+            <p class="text-muted">
+                <em>Please note: A passing score on the Learner Assesment Test must also be achieved to receive Mainpro+ credits for the program.</em>
+            </p>
+            <hr />
+
+
+            @if (!Model.IsDraft)
+            {
+                <div class="alert alert-success"><strong>Congratulations!</strong> You have completed the post-program activities.</div>
+            }
+
+            <form method="post" id="reflective-questions-form">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        @for (int i = 0; i < Model.ReflectiveQuestions.Count; i++)
+                        {
+                            <div class="form-group">
+                                <input asp-for="@Model.ReflectiveQuestions[i].Description" hidden="hidden" />
+                                <input asp-for="@Model.ReflectiveQuestions[i].Id" hidden="hidden" />
+
+                                <p>
+                                    <strong>@(i+1). @Model.ReflectiveQuestions[i].Description</strong>
+                                </p>
+
+                                @if(Model.IsDraft)
+                                {
+                                    <textarea asp-for="@Model.ReflectiveQuestions[i].Answer" class="form-control" rows="5"></textarea>
+                                } 
+                                else
+                                {
+                                    <div class="form-control fake-textarea">
+                                        @Html.DisplayFor(m=> Model.ReflectiveQuestions[i].Answer)
+                                    </div>
+                                }
+
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (Model.IsDraft)
+                {
+                    <button type="submit" id="submit-btn" class="btn btn-success">Submit</button>
+                    // form submition is done through javascript in order to set the IsDraft Value.
+                    <button type="submit" id="save-btn" class="btn btn-secondary">Save</button>
+                }
+                else
+                {
+                    <a class="btn btn-primary" asp-page="./Index">Return to Dashboard</a>
+                    <a class="btn btn-success" asp-page="./Survey">Evaluation Survey</a>
+                }
+
+                <input id="is-draft" asp-for="IsDraft" type="hidden" />
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (Model.ShowModal)
+{
+    <input id="should-show-modal" value="True" hidden="hidden" type="hidden" />
+
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5>
+                        <strong>Congratulations!</strong>
+                    </h5>
+                    <p>You have completed the <em>ImmunizNation Reflective Questions</em>.</p>
+                    <p>You will be emailed your certificate of completion, or you can download your certificate through the dashboard.</p>
+                </div>
+                <div class="modal-footer">
+                    <a asp-page="Survey" class="btn btn-secondary">Evaluation Survey</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.ShowSaveModal)
+{
+    <input id="should-show-save-modal" value="True" hidden="hidden" type="hidden" />
+
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5>
+                        <strong>Congratulations!</strong>
+                    </h5>
+                    <p>You have successfully saved the ImunizNation Reflective questions.</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-success" asp-page="./Survey">Evaluation Survey</a>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#submit-btn').on('click', function (event) {
+            event.preventDefault();
+            submitForm(false);
+        });
+
+        $("#save-btn").on("click", function (event) {
+            event.preventDefault();
+            submitForm(true);
+        });
+
+        function submitForm(isDraft) {
+            $('#is-draft').val(isDraft);
+            $('#reflective-questions-form').submit();
+        }
+
+        showModal("should-show-modal");
+        showModal("should-show-save-modal");
+
+        function showModal(input) {
+            //var submitResultModal = document.getElementById("should-show-modal");
+            var submitResultModal = document.getElementById(input);
+            if (submitResultModal) {
+                var showModal = submitResultModal.value === "True" ? true : false;
+
+                $('#modal').modal({
+                    show: showModal,
+                    backdrop: 'static'
+                });
+            }
+        }
+
+        
+    </script>
+}

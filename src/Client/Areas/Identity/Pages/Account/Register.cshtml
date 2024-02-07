@@ -1,0 +1,226 @@
+﻿@page
+@model RegisterModel
+@using System.Text.RegularExpressions 
+@{
+    ViewData["Title"] = "Register";
+    List<SelectListItem> accountTypes = ViewData["AccountTypes"] as List<SelectListItem>;
+    List<SelectListItem> provinces = ViewData["Provinces"] as List<SelectListItem>;
+}
+
+
+<div class="background-img login-background-img"></div>
+    <div class="container">
+
+        <div class="register-container">
+            <section>
+                <div class="row">
+                    <div class="col-lg-8 col-md-12">
+
+                        <div class="card login-card shadow">
+                            <div class="card-body">
+                                <div class="login-branding">
+                                    <img src="~/images/branding.png" />
+                                </div>
+                                <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                    <hr />
+
+                                    <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+                                    <div class="form-section-header">
+                                        <h6>
+                                            <strong>Personal Information</strong>
+                                            <br/>
+                                            <small class="text-muted">Enter your personal information. This information will appear on your certificate.</small>
+                                        </h6>
+                                    </div>
+                                    
+
+                                    <div class="form-group">
+                                        @{ 
+                                            var selectList = Enum.GetValues(typeof(AccountTypes))
+                                                .Cast<AccountTypes>()
+                                                .Where(a => a != AccountTypes.None)
+                                                .Select(e => new SelectListItem
+                                                {
+                                                    Value = ((int)e).ToString(),
+                                                    Text = Regex.Replace(e.ToString(), "([A-Z])", " $1").Trim()
+                                                });;
+                                        }
+
+                                        <label asp-for="Input.AccountType" class="required"></label>
+                                        <select asp-for="Input.AccountType" asp-items="selectList" class="form-control" id="account-type">
+                                            <option value="">Select Account Type</option>
+                                        </select>
+                                        <span asp-validation-for="Input.AccountType" class="text-danger"></span>
+                                    </div>
+
+                                    <div id="license-number" class="form-group" style="display:none">
+                                        <label asp-for="Input.LicenseNumber" class="required"></label>
+                                        <input asp-for="Input.LicenseNumber" class="form-control" id="license-number-input" />
+                                        <span asp-validation-for="Input.LicenseNumber" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Input.FirstName" class="required"></label>
+                                                <input asp-for="Input.FirstName" class="form-control" />
+                                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Input.LastName" class="required"></label>
+                                                <input asp-for="Input.LastName" class="form-control" />
+                                                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Input.City" class="required"></label>
+                                                <input asp-for="Input.City" class="form-control" />
+                                                <span asp-validation-for="Input.City" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Input.Province" class="required"></label>
+                                                <select asp-for="Input.Province" asp-items="@Html.GetEnumSelectList<Provinces>()" class="form-control">
+                                                    <option value="">Select a Province</option>
+                                                </select>
+                                                <span asp-validation-for="Input.Province" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr/>
+
+                                    <div class="form-section-header">
+                                        <h6>
+                                            <strong>Event Information</strong>
+                                            <br/>
+                                            <small class="text-muted">
+                                                Enter the information from the session you attended.
+                                            </small>
+                                        </h6>
+                                    </div>
+                               
+                                    <div id="gp-event-info" style="display:none">
+                                        <div class="row">
+                                            <div class="col col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="Input.CertSessionId" class="required"></label>
+                                                    <input asp-for="Input.CertSessionId" class="form-control" />
+                                                    <span asp-validation-for="Input.CertSessionId" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                           <div class="col col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="Input.LocationOfSession" class="required"></label>
+                                                    <input asp-for="Input.LocationOfSession" class="form-control" />
+                                                    <span asp-validation-for="Input.LocationOfSession" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Input.DateOfSession" class="required"></label>
+                                                <input asp-for="Input.DateOfSession" class="form-control" />
+                                                <span asp-validation-for="Input.DateOfSession" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="form-section-header">
+                                        <h6>
+                                        <strong>Account Information</strong>
+                                            <br/>
+                                            <small class="text-muted">
+                                                Create login credentials for your account.
+                                            </small>
+                                        </h6>
+                                    </div>
+                                    
+
+                                    <div class="form-group">
+                                        <label asp-for="Input.Email" class="required"></label>
+                                        <input asp-for="Input.Email" class="form-control" />
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Input.Password" class="required"></label>
+                                        <input asp-for="Input.Password" class="form-control" />
+                                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Input.ConfirmPassword" class="required"></label>
+                                        <input asp-for="Input.ConfirmPassword" class="form-control" />
+                                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" asp-for="Input.SubscriptionEmail">
+                                            <input asp-for="Input.SubscriptionEmail" hidden="hidden" />
+                                            <label class="form-check-label">
+                                                Receive Certificate of Completion by email.<br />Note: Your email will not be shared or distributed.
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Register</button>
+                                    <a asp-page="./Login" class="btn btn-secondary">Return to Log in</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var accountTypeElem = document.getElementById("account-type");
+            var licenseNumberElem = document.getElementById("license-number");
+            var licenseNumberInput = document.getElementById('license-number-input');
+            var gpEventInfo = document.getElementById("gp-event-info");
+
+            var accountType = accountTypeElem.value;
+            if (accountType == 2) {
+                licenseNumberElem.style.display = "block";
+            } 
+            else if (accountType == 1) {
+                licenseNumberElem.style.display = "none";
+                gpEventInfo.style.display = "block";
+            }
+
+            if (accountTypeElem) {
+                accountTypeElem.addEventListener("change", onAccountTypeChange);
+            }
+
+            function onAccountTypeChange(event) {
+                var accountType = accountTypeElem.value;
+                if (accountType) {
+                    licenseNumberElem.style.display = accountType == "1" ? "none" : "block";
+                    gpEventInfo.style.display = accountType == "1" ? "block" : "none";
+                }
+            }
+        }());
+    </script>
+}

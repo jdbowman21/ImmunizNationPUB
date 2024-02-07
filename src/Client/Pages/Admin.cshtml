@@ -1,0 +1,358 @@
+﻿@page
+@model ImmunizNation.Client.Pages.AdminModel
+@using ImmunizNation.Client.Pages
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Admin";
+
+    var prevDisabled = !Model.Users.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Users.HasNextPage ? "disabled" : "";
+}
+
+@section Styles
+{
+    <style>
+        html,
+        body {
+            background-color: #f6f6f6;
+        }
+    </style>
+}
+
+<div class="container">
+    <h5 class="text-uppercase admin-dashboard-title">
+        <strong>Admin Dashboard</strong>
+    </h5>
+    <div class="admin-stats-wrapper">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card admin-stat-card-primary shadow mb-3">
+                    <div class="card-body">
+
+                        <div class="admin-stats-content">
+
+                            <div class="admin-stat">
+                                <small class="text-primary text-uppercase">
+                                    <strong>@Html.DisplayNameFor(m => Model.TotalUsers)</strong>
+                                </small>
+                                <h2>
+                                    <strong>@Html.DisplayFor(m => Model.TotalUsers)</strong>
+                                </h2>
+                                @*<small class="text-muted">@Html.DisplayNameFor(m => Model.TotalUsers)</small>*@
+                            </div>
+                            <div class="admin-stats-icon text-primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card admin-stat-card-info shadow mb-3">
+                    <div class="card-body">
+                        <div class="admin-stats-content">
+
+                            <div class="admin-stat">
+                                <small class="text-info text-uppercase">
+                                    <strong>@Html.DisplayNameFor(m => Model.TotalPharmacists)</strong>
+                                </small>
+                                <h2>
+                                    <strong>@Html.DisplayFor(m => Model.TotalPharmacists)</strong>
+                                </h2>
+
+                            </div>
+                            <div class="admin-stats-icon text-info">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card admin-stat-card-success shadow mb-3">
+                    <div class="card-body">
+                        <div class="admin-stats-content">
+
+                            <div class="admin-stat">
+                                <small class="text-success text-uppercase text-truncate">
+                                    <strong>@Html.DisplayNameFor(m => Model.TotalGP)</strong>
+                                </small>
+                                <h2>
+                                    <strong>@Html.DisplayFor(m => Model.TotalGP)</strong>
+                                </h2>
+
+                            </div>
+                            <div class="admin-stats-icon text-success">
+                                <i class="fas fa-stethoscope"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3 shadow">
+        <div class="card-body">
+            <h5 class="text-uppercase">
+                <strong>Export Reports</strong>
+            </h5>
+            <p class="lead">Export your data to an excel spreadsheet.</p>
+            <hr />
+            <div class="row">
+                <div class="col-md-6 col-lg-3">
+                    <form asp-controller="Admin" asp-action="ExportWorkbook" asp-route-returnUrl="./Admin" method="post">
+                        <div class="report-stat">
+                            <p class="text-uppercase">
+                                <strong>Export Workbook</strong>
+                            </p>
+                            <button class="btn btn-sm btn-block btn-primary">Export Workbook</button>
+                            <small>Exports all reports into a single excel file.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <form asp-controller="Admin" asp-action="ExportAllUsers" asp-route-returnUrl="./Admin" method="post">
+                        <div class="report-stat">
+                            <p class="text-uppercase">
+                                <strong>All Users</strong>
+                            </p>
+                            <button type="submit" class="btn btn-sm btn-block btn-primary">Export All Users</button>
+                            <small>Export full users list.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <form asp-controller="Admin" asp-action="ExportReflectiveActivity" asp-route-returnUrl="./Admin" method="post">
+                        <div class="report-stat">
+                            <p class="text-uppercase">
+                                <strong>Reflective activity</strong>
+                            </p>
+                            <button type="submit" class="btn btn-sm btn-block btn-primary">Export Reflective Activity</button>
+                            <small>Export all of the reflective activity answers.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                     <form asp-controller="Admin" asp-action="ExportEvaluationSurvey" asp-route-returnUrl="./Admin" method="post">
+                        <div class="report-stat">
+                            <p class="text-uppercase">
+                                <strong>Evaluation Survey</strong>
+                            </p>
+                            <button type="submit" class="btn btn-sm btn-block btn-primary">Export Evaluation Survey</button>
+                            <small>Export evaluation results.</small>
+                        </div>
+                    </form>
+                </div>
+                 <div class="col-md-6 col-lg-3">
+                     <form role="form" method="post" asp-controller="Admin" asp-action="ExportResourceSpreadsheet">
+                        <div class="report-stat">
+                            <p class="text-uppercase">
+                                <strong>Resource Downloads</strong>
+                            </p>
+                            <button type="submit" class="btn btn-sm btn-block btn-primary">Export Resource Downloads</button>
+                            <small>Export number of times each resource has been downloaded.</small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-uppercase">
+                <strong>Users</strong>
+            </h5>
+
+            <p class="lead">View, filter, and sort all the registered users.</p>
+
+            <form asp-page="./Admin" method="get" class="form-inline">
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="text" name="SearchString" class="form-control" value="@Model.CurrentFilter" />
+                        <input asp-for="DateFilter" class="form-control" />
+                        <input type="submit" value="Search" class="btn btn-primary" /> |
+                        <a asp-page="./Admin">Back to full List</a>
+                    </p>
+                </div>
+            </form>
+     @*       <form asp-page="./Admin" method="get" class="form-inline">
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="text" name="SearchString" class="form-control" value="@Model.CurrentFilter" />
+                        <input asp-for="DateFilter" class="form-control" value="@Model.DateFilter" />
+                        <input type="submit" value="Search" class="btn btn-primary" /> |
+                        <a asp-page="./Admin">Back to full List</a>
+                    </p>
+                </div>
+            </form>*@
+
+
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped admin-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <a asp-page="./Admin" asp-route-sortOrder="@Model.NameSort" asp-route-dateFilter="@Model.DateFilter" asp-route-searchString="@Model.CurrentFilter">
+                                <span>Name</span>
+                                @if (!String.IsNullOrWhiteSpace(Model.NameSort))
+                                {
+                                    <i class="fas fa-sort-down"></i>
+                                }
+
+                            </a>
+                        </th>
+                        <th>
+                            <a asp-page="./Admin" asp-route-sortOrder="@Model.EmailSort">
+                                <span>Email</span>
+                                @if (!String.IsNullOrWhiteSpace(Model.EmailSort))
+                                {
+                                    <i class="fas fa-sort-down"></i>
+                                }
+                            </a>
+                        </th>
+                        <th>
+                            <a asp-page="./Admin" asp-route-sortOrder="@Model.AccountTypeSort">
+                                <span>Account Type</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a asp-page="./Admin" asp-route-sortOrder="@Model.ScoreSort">
+                                <span>LA Score</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a asp-page="./Admin" asp-route-sortOrder="@Model.RACompleted" title="Sort by Reflective Activity completed">
+                                <span>RA Completed</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a asp-page="./Admin" asp-route-sortOrder="@Model.DateOfSessionSort" title="Sort by date of session.">
+                                <span>Date of Session</span>
+                            </a>
+                        </th>
+                        <th />
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.Users.Count > 0)
+                    {
+                        foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(m => user.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => user.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => user.AccountType)
+                                </td>
+                                <td>
+                                    <strong class="@(user.Score.HasValue && user.Score.Value >= 0.7 ? "text-success" : "text-danger")">
+                                        @Html.DisplayFor(m => user.ScoreAsPercent)
+                                    </strong>
+                                </td>
+                                <td>
+                                    @if (user.AccountType == AccountTypes.Pharmacist)
+                                    {
+                                        <span>N/A</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@(user.RACompleted ? "Complete" : "Incomplete")</span>
+                                    }
+                                </td>
+                                <td>
+                                    @user.DateOfSession.Value.ToShortDateString()
+                                </td>
+                                <td class="text-right text-nowrap" style="width:0%;">
+                                    @if (user.IsPassingUser())
+                                    {
+                                        <form asp-controller="Admin" asp-action="SendCertificateByUserId" asp-route-userId="@user.Id" style="display:inline-block">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm" title="Resend certificate">
+                                                <i class="fas fa-share-square"></i>
+                                            </button>
+                                        </form>
+                                        <form asp-route-userId="@user.Id" asp-controller="Admin" asp-action="GetCertificateByUserId" method="post" style="display:inline-block">
+                                            <button class="btn btn-outline-primary btn-sm" type="submit" title="Download certificate">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </form>
+
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-outline-dark btn-sm" title="Incomplete" disabled="disabled">
+                                            <i class="fas fa-share-square"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-dark btn-sm" title="Incomplete" disabled="disabled">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    } 
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-danger">
+                                <strong>
+                                    <em>No users to display.</em>
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+
+
+                    </tbody>
+            </table>
+
+
+        </div>
+        <div class="card-body">
+            <div>
+                @if (prevDisabled != "disabled")
+                {
+                    <a asp-page="./Admin"
+                       asp-route-sortOrder="@Model.CurrentSort"
+                       asp-route-pageIndex="@(Model.Users.PageIndex - 1)"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       class="btn btn-primary @prevDisabled">
+                        Previous
+                    </a>
+                }
+
+                @if (String.IsNullOrEmpty(nextDisabled))
+                {
+                    <a asp-page="./Admin"
+                       asp-route-sortOrder="@Model.CurrentSort"
+                       asp-route-pageIndex="@(Model.Users.PageIndex + 1)"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       class="btn btn-primary @nextDisabled">
+                        Next
+                    </a>
+                }
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+</div>

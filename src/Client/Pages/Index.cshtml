@@ -1,0 +1,269 @@
+﻿@page
+@model ImmunizNation.Client.Pages.IndexModel
+@{
+    ViewData["Title"] = "Progress Dashboard";
+
+    bool completedActivities = false;
+
+    if(Model.AppUser != null && Model.AppUser.AccountType == AccountTypes.GeneralPractitioner
+        && (Model.HighestScoreExam != null && Model.HighestScoreExam.Score >= 0.7)
+        && Model.CompletedReflectiveQuestions())
+    {
+        completedActivities = true;
+    }
+    else if (Model.AppUser != null && Model.AppUser.AccountType == AccountTypes.Pharmacist 
+        && Model.HighestScoreExam != null && Model.HighestScoreExam.Score >= 0.7)
+    {
+        completedActivities = true;
+    }
+}
+
+
+@if(User.Identity.IsAuthenticated && Model.AppUser != null) 
+{
+    <div class="container dashboard">
+
+        <div>
+            <h4>
+                <strong>@Model.UserName</strong>
+            </h4>
+            <div class="user-info-wrapper">
+                <span class="user-info">@Model.AppUser.Email</span>
+
+                @if(User.IsInRole("Admin")) 
+                { 
+                    <span>Administrator</span>
+                }
+                else
+                {
+                    <span class="user-info">@Html.DisplayFor(m => m.AccountType)</span>
+                }
+                
+
+                @if (Model.AppUser.AccountType == AccountTypes.Pharmacist)
+                {
+                    <span class="user-info">@Model.AppUser.LicenseNumber</span>
+                }
+
+            </div>
+        </div>
+
+        <h5>
+            <strong>Progress Dashboard</strong>
+        </h5>
+
+        @if(Model.AppUser.AccountType == AccountTypes.GeneralPractitioner)
+        {
+            <p>To obtain your <strong>2.0 Mainpro+ credits</strong> and your Certificate of Completion, please complete the post-program activities. The Learner Assessment Test and Reflective Activity must both be completed in order to receive credits for the program.</p>
+        }
+        else if (Model.AppUser.AccountType == AccountTypes.Pharmacist)
+        {
+            <p>To obtain your <strong>1.5 Continuing Education Units</strong> and your Statement of Attendance, complete the post-program activity.</p>
+        }
+
+        <div class="card">
+            <div class="card-body">
+
+                <div class="card-columns" style="column-count:1">
+
+                    @if(completedActivities)
+                    {
+                        <div class="card">
+                            <div class="card-body">
+
+                                <h4>
+                                    <strong>Congratulations!</strong>
+                                </h4>
+                                @if(Model.AppUser.AccountType == AccountTypes.GeneralPractitioner)
+                                {
+                                    <p class="lead">You have completed the ImmunizNation Program. Download your Certificate of Completion below.</p>
+                                }
+                                else if(Model.AppUser.AccountType == AccountTypes.Pharmacist)
+                                {
+                                    <p class="lead">You have completed the ImmunizNation Program. Download your Statement of Attendance below.</p>
+                                }
+                                
+                                <div class="download-area">
+                                    <form asp-controller="Home" asp-action="GetCertificate" method="post">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Download Certificate</button>
+                                        </div>
+                                    </form>
+                                    <form asp-controller="Home" asp-action="SendCertificateEmail" method="post">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Resend Email</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <p class="text-muted">If you are having issues printing the pdf certificate make sure to select <em><strong>Fit to printable area</strong></em> from the <strong>printing options</strong>.</p>
+
+                            </div>
+                        </div>
+                    }
+
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h4>
+                                <strong>Learner Assessment Test</strong>
+                            </h4>
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    @if (Model.HighestScoreExam == null)
+                                    {
+                                        <div class="alert alert-danger">You have not completed the ImmunizNation <strong>Learner Assessment Test</strong>. You may take unlimited attempts to achieve the passing score.</div>
+                                        <hr />
+                                    }
+
+                                    <div class="test-results-wrapper">
+
+                                        <div class="test-result-item">
+
+                                            @if (Model.HighestScoreExam != null)
+                                            {
+                                                <h3 class="@(Model.HighestScoreExam != null && Model.HighestScoreExam.Score >= Model.PassingGrade ? "text-success" : "text-danger")">
+                                                    <strong>@(System.Math.Ceiling(Model.HighestScoreExam.Score.Value * 100))%</strong>
+                                                </h3>
+                                            }
+                                            else
+                                            {
+                                                <h3>
+                                                    <strong>-</strong>
+                                                </h3>
+                                            }
+                                            <small>Highest Grade</small>
+                                        </div>
+
+                                        <div class="test-result-item">
+                                            <h3>
+                                                <strong>@(Math.Ceiling(Model.PassingGrade *100))%</strong>
+                                            </h3>
+                                            <small>Passing Score</small>
+                                        </div>
+                                        <div class="test-result-item">
+                                            @if (Model.KnowledgetTests != null)
+                                            {
+                                                <h3>
+                                                    <strong>@Model.KnowledgetTests.Count</strong>
+                                                </h3>
+                                            }
+                                            else
+                                            {
+                                                <h3>
+                                                    <strong>0</strong>
+                                                </h3>
+                                            }
+                                            <small>Attempts</small>
+                                        </div>
+                                    </div>
+                                    @if (Model.HighestScoreExam == null || (Model.HighestScoreExam != null && Model.HighestScoreExam.Score < 0.7))
+                                    {
+                                        <hr />
+                                        <a asp-page="KnowledgeTest" class="btn btn-primary btn-block">Complete Learner Assessment Test</a>
+                                    }
+                                    else if (Model.HighestScoreExam.Score >= 0.7)
+                                    {
+                                        <hr />
+                                        <a asp-page="KnowledgeTest" class="btn btn-success btn-block">Review Learner Assessment Test</a>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    @if (Model.AppUser.AccountType == AccountTypes.GeneralPractitioner)
+                    {
+
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div style="width:100%">
+                                    <h4>
+                                        <strong>Reflective Questions</strong>
+                                    </h4>
+
+                                    <hr />
+
+                                    @{
+                                        double completedPercent = 0;
+
+                                        if (Model.ReflectiveExamResult != null)
+                                        {
+                                            int count = Model.ReflectiveExamResult.Answers.Count;
+                                            int answered = 0;
+                                            foreach (var answer in Model.ReflectiveExamResult.Answers)
+                                            {
+                                                if (!String.IsNullOrEmpty(answer.Answer))
+                                                {
+                                                    answered++;
+                                                }
+                                            }
+
+                                            completedPercent = Math.Ceiling(((double)answered / (double)count) * 100);
+                                        }
+                                    }
+
+                                    @if (completedPercent == 100)
+                                    {
+                                        if(Model.ReflectiveExamResult.IsDraft)
+                                        {
+                                            <div class="alert alert-warning">Please submit your responses on the reflective activity page in order to receive your Certificate of Completion.</div>
+                                        } 
+                                        else
+                                        {
+                                            <div class="alert alert-success"><strong>Congratulations!</strong> You have completed the post-program activities.</div>
+                                            
+                                        }
+                                        
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-danger">You have not completed the ImmunizNation <strong>Reflective Activity Test</strong></div>
+                                    }
+
+                                    @{
+                                        var progressBarColor = String.Empty;
+                                        if(completedPercent == 0)
+                                        {
+                                            progressBarColor = "bg-secondary";
+                                        }
+                                        else if (completedPercent == 100 && Model.ReflectiveExamResult.IsDraft)
+                                        {
+                                            progressBarColor = "bg-warning";
+                                        }
+                                        else
+                                        {
+                                            progressBarColor = "bg-success";
+                                        }
+                                    }
+
+                                    <div class="form-group">
+                                        <div class="progress" style="height:32px;">
+                                            <div class="progress-bar @progressBarColor" role="progressbar" style="width: @(completedPercent)%; min-width:24px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">@completedPercent%</div>
+                                        </div>
+                                    </div>
+
+                                    @if (completedPercent != 100)
+                                    {
+                                        <hr />
+                                        <a asp-page="ReflectiveTest" class="btn btn-primary btn-block">Complete Reflective Questions</a>
+                                    }
+                                    else
+                                    {
+                                        <hr />
+                                        <a asp-page="ReflectiveTest" class="btn btn-success btn-block">Review Reflective Questions</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

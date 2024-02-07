@@ -1,0 +1,198 @@
+
+html,
+body {
+	font-family: 'Open Sans', sans-serif;
+	height:100%;
+	padding:0;
+	margin:0;
+}
+
+main {
+  position: relative;
+  min-height:100%;
+  width:100%;
+  padding:16px 0;
+  > .contianer {
+		height:100%;
+	}
+}
+
+.text-white {
+  color:$white;
+}
+
+.card {
+  border-radius: 16px;
+}
+
+.fake-textarea {
+  height:auto;
+  
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.form-section-header {
+  margin-bottom: 16px;
+}
+
+.radio-button-group {
+  padding-left:32px;
+  @include  media-breakpoint-up(md) {
+    padding-left:64px;
+  }
+}
+
+.background-img {
+  background-image:url("/images/immuniznation-background.png");
+  background-repeat: no-repeat;
+}
+
+.header-bg {
+  background-image:url("/images/header-background.png");
+  background-repeat: no-repeat;
+  background-position:right;
+}
+
+.custom-navbar {
+  background-color: $custom-navbar-bg;
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  position:relative;
+  // padding: 0.5rem 1rem;
+
+  > .container {
+    flex-wrap: nowrap;
+    display: flex;
+    
+  }
+}
+
+.custom-navbar-btn {
+  flex-grow: 1;
+  padding:8px 16px;
+  text-align: center;
+  
+  transition: background-color ease .25s;
+
+  &.active {
+    background-color: $custom-navbar-active-bg;
+  }
+
+  &:hover {
+    background-color: $custom-navbar-hover-bg;
+  }
+
+  &,
+  &:hover,
+  &:focus,
+  &:active {
+    color:#fff;
+    text-decoration: none;
+  }
+
+  &.resource-btn {
+    background-color:#893a3a;
+
+    &.active {
+      background-color:#603333;
+    }
+
+    &:hover {
+      background-color:#743838;
+    }
+  }
+}
+
+// modal stylings
+.modal-success {
+	.modal-content {
+		border:1px solid $success;
+	}
+}
+
+.modal-danger {
+	.modal-content {
+		border:1px solid $danger;
+	}
+}
+
+// dashboard re-design suggestion
+.dashboard {
+	
+}
+
+.admin-stats-wrapper {
+  //margin-bottom: 24px;
+}
+
+.admin-stats-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  
+}
+
+.admin-stats-icon {
+  display:flex;
+  font-size: 36px;
+  margin-left:24px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.admin-stat {
+  display:flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 1;
+  
+}
+
+$admin-stat-card-border-width:3px;
+
+.admin-stat-card-primary {
+  border-left: $admin-stat-card-border-width solid $primary;
+}
+.admin-stat-card-info {
+  border-left: $admin-stat-card-border-width solid $info;
+}
+.admin-stat-card-success {
+  border-left: $admin-stat-card-border-width solid $success;
+}
+
+.admin-dashboard-title {
+  margin:16px 0 24px 0;
+}
+
+.report-stat {
+  margin-bottom: 16px;
+}
+
+.table {
+  thead {
+    font-size: 14px;
+  }
+  tbody {
+    font-size:14px;
+  }
+}
+
+.admin-table {
+  tbody {
+    td {
+      vertical-align: middle;
+    }
+  }
+
+  form {
+    display: inline-block;
+  }
+
+  .btn-outline-dark {
+    background-color:#aaa;
+  }
+}

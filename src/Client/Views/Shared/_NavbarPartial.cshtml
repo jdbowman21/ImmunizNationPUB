@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ImmunizNation.Client.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{ 
+    var user = await UserManager.GetUserAsync(User);
+    var pageName = ViewContext.RouteData.Values["page"].ToString();
+}
+
+@if (user != null && SignInManager.IsSignedIn(User))
+{
+    
+    <div class="custom-navbar  mb-3">
+        <div class="container">
+            <a asp-page="Index" class="custom-navbar-btn @(pageName == "/Index" ? "active" : "")">Progress Dashboard</a>
+            <a asp-page="KnowledgeTest" class="custom-navbar-btn @(pageName == "/KnowledgeTest" ? "active" : "")">Learner Assessment Test</a>
+
+            @if (user.AccountType == AccountTypes.GeneralPractitioner)
+            {
+                <a asp-page="ReflectiveTest" class="custom-navbar-btn @(pageName == "/ReflectiveTest" ? "active" : "")">Reflective Activity</a>
+            }
+
+            <a asp-page="Survey" class="custom-navbar-btn @(pageName == "/Survey" ? "active" : "")">Evaluation Survey</a>
+
+            <a asp-page="Resources" class="custom-navbar-btn resource-btn @(pageName == "/Resources" ? "active" : "")">Resources</a>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,224 @@
+﻿@page
+@model ImmunizNation.Client.Pages.KnowledgeTestModel
+@inject UserManager<ApplicationUser> userManager;
+@{
+    ViewData["Title"] = "Learner Assessment Test";
+    var user = await userManager.GetUserAsync(User);
+}
+
+<div class="container">
+    <form id="knowledge-test-form" method="post">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>
+                    <strong>ImmunizNation Learner Assessment Test</strong>
+                </h4>
+                @if (user.AccountType == AccountTypes.Pharmacist)
+                {
+                    <p>Please complete the below Learner Assessment Test following completion of the ImmunizNation accredited program. A passing score of 70% is required. You may take unlimited attempts to achieve the passing score.</p>
+                    <p class="text-muted">
+                        <em>Please note: you will be redirected to download your Statement of Attendance once you achieve a score of 70% or higher.</em>
+                    </p>
+                }
+                else if (user.AccountType == AccountTypes.GeneralPractitioner)
+                {
+                    <p>Please complete the below Learner Assessment Test following completion of the ImmunizNation accredited program. A passing score of <strong>70%</strong> is required to receive Mainpro+ credits for the program. You may take unlimited attempts to achieve the passing score.</p>
+
+                    <p class="text-muted">
+                        <em>Please note: The Reflective Activity must also be completed to receive Mainpro+ credits for the program.</em>
+                    </p>
+                }
+
+                <hr />
+
+                @if (Model.HasPassedTest())
+                {
+                    <div class="alert alert-success">
+                        <strong>Congratulations!</strong>
+                        <br />
+                        <span>You have completed the ImmunizNation Learner Assessment Test with a score of</span>
+                        <strong>@(Math.Ceiling(Model.Score * 100))%</strong>
+                    </div>
+                }
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    var question = Model.Questions[i];
+                    @Html.HiddenFor(model => model.Questions[i].Id)
+                    @Html.HiddenFor(model => model.Questions[i].Answer)
+                    @Html.HiddenFor(model => model.Questions[i].Question)
+
+                    <div class="form-group">
+                        <p>
+                            <strong>@(i + 1). @Html.Raw(question.Question)</strong>
+                            <br />
+                            @if(Model.HasPassedTest())
+                            {
+                                <div class="alert alert-info">
+                                    <span><em>@question.LessonDescription</em></span>
+                                </div>
+                            }
+                        </p>
+
+                        <div class="radio-button-group">
+                            @for (int j = 0; j < question.Answers.Count; j++)
+                            {
+                                // display incorrect answers when a test has been completed.
+                                var answer = question.Answers[j];
+                                bool showIncorrectAnswer = false;
+                                bool showCorrectAnswer = false;
+
+                                @Html.HiddenFor(model => model.Questions[i].Answers[j].Description)
+                                @Html.HiddenFor(model => model.Questions[i].Answers[j].Value)
+
+                                if(Model.HasPassedTest())
+                                {
+                                    if (question.Answer != Model.Questions[i].UserAnswer && Model.Questions[i].Answers[j].Value == Model.Questions[i].UserAnswer)
+                                    {
+                                        showIncorrectAnswer = true;
+                                    }
+                                    else if(Model.Questions[i].Answers[j].Value == question.Answer)
+                                    {
+                                        showCorrectAnswer = true;
+                                    }
+                                }
+                                
+                                <input asp-for="Questions[i].Answers[j].Id" hidden="hidden" />
+                                <div class="form-check">
+                                    <label class="@(showIncorrectAnswer ? "text-danger": "") @(showCorrectAnswer ? "text-success text-bold" : "")">
+                                        <input class="form-check-input" type="radio" asp-for="@Model.Questions[i].UserAnswer" value="@answer.Value" />
+                                        <span class="form-check-label">@answer.Description</span>
+                                    </label>
+                                </div>
+
+                            }
+                            <span asp-validation-for="@Model.Questions[i].UserAnswer" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    @if (Model.HasPassedTest())
+                    {
+                        <a class="btn btn-primary" asp-page="./Index">Return to Dashboard</a>
+                        if(user.AccountType == AccountTypes.Pharmacist)
+                        {
+                            <a class="btn btn-success" asp-page="./Survey">Evaluation Survey</a>
+                        } else
+                        {
+                           <a class="btn btn-success" asp-page="./ReflectiveTest">Reflective Activity</a> 
+                        }
+                        
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+@if (Model.Results != null)
+{
+    var results = Model.Results;
+
+    <input id="should-show-modal" value="True" hidden="hidden" type="hidden" />
+
+    <div id="modal" class="modal fade @(results.Passed ? "modal-success" : "modal-danger")" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="text-center">The passing score for this test is @((results.MinResult * 100).ToString())%</p>
+                    <h1 class="text-center @(results.Passed ? "text-success" : "text-danger")">
+                        <strong>@results.ResultText</strong>
+                    </h1>
+                    @if (results.Passed)
+                    {
+                        if (results.AccountType == AccountTypes.Pharmacist)
+                        {
+                            <div class="text-center">
+                                <span>
+                                    You have passed the Learner Assessment Test. Please fill out the Evaluation Survey.
+                                </span>
+                            </div>
+                        } else 
+                        {
+                            <div class="text-center">
+                                <span>
+                                    You have passed the Learner Assessment Test. Please continue to Reflective Questions.
+                                </span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <span>Please close this message to re-take the test.</span>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+
+                    @{
+                        if (Model.Results.Passed)
+                        {
+                            if (Model.Results.AccountType == AccountTypes.GeneralPractitioner)
+                            {
+                                <a class="btn btn-success btn-block text-uppercase" asp-page="ReflectiveTest">Go to reflection questions</a>
+                            }
+                            else
+                            {
+                                <a asp-page="Survey" class="btn btn-success btn-block text-uppercase">Evaluation Survey</a>
+                            }
+                        }
+                        else
+                        {
+                            <button type="reset" class="btn btn-danger btn-block text-uppercase" onclick="javascript:window.location.href = window.location">Retry</button>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var modal = document.getElementById("should-show-modal");
+        if (modal) {
+            var showModal = modal.value === "True" ? true : false;
+
+            $('#modal').modal({
+                show: showModal,
+                backdrop: 'static'
+            });
+        }
+
+
+        //$('#submit-btn').on('click', function (event) {
+        //    event.preventDefault();
+        //    submitForm(false);
+        //});
+
+        //$("#save-btn").on("click", function (event) {
+        //    event.preventDefault();
+        //    submitForm(true);
+        //});
+
+        //function submitForm(isDraft) {
+        //    $('#is-draft').val(isDraft);
+        //    $('#knowledge-test-form').submit();
+        //}
+    </script>
+}
