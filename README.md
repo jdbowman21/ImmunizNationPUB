@@ -1,6 +1,5 @@
-# Porfoltio - ImmunizNation
+# ImmunizNationPUB
 
-Demonstration of the ImmunizNation application for my Portfolio.
 Practical Strategies for Recommending Immunizations to Patients at Risk of Herpes Zoster.
 
 ## Getting Started
