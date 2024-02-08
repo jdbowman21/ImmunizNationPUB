@@ -1,5 +1,6 @@
-# ImmunizNationPUB
+# Porfoltio - ImmunizNation
 
+Demonstration of the ImmunizNation application for my Portfolio.
 Practical Strategies for Recommending Immunizations to Patients at Risk of Herpes Zoster.
 
 ## Getting Started
@@ -9,7 +10,7 @@ Practical Strategies for Recommending Immunizations to Patients at Risk of Herpe
 - (Windows only) Install Visual Studio. Visual Studio contains tooling support for .NET
   - During installation, ensure that the following are selected:
   - `ASP.NET and web development` workload.
-- Install SQL Server 2019 
+- Install SQL Server 2019 or newer.
 
 ### Running the solution
 

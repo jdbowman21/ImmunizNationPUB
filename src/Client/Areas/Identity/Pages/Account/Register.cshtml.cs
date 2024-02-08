@@ -185,7 +185,7 @@ namespace ImmunizNation.Client.Areas.Identity.Pages.Account
                     using (StreamReader sr = new StreamReader(path))
                     {
                         var htmlMessage = sr.ReadToEnd();
-                        await _emailSender.SendEmailAsync(Input.Email, "Thanks for registering for ImmunizNation", htmlMessage);
+                        //await _emailSender.SendEmailAsync(Input.Email, "Thanks for registering for ImmunizNation", htmlMessage);
                     }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)

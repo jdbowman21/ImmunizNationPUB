@@ -11249,11 +11249,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\ImmunizNation\\src\\Client\\ImmunizNation.csproj",
+      "projectUniqueName": "C:\\Users\\User\\source\\repos\\ImmunizNationPUB\\src\\Client\\ImmunizNation.csproj",
       "projectName": "ImmunizNation",
-      "projectPath": "C:\\Users\\User\\source\\repos\\ImmunizNation\\src\\Client\\ImmunizNation.csproj",
+      "projectPath": "C:\\Users\\User\\source\\repos\\ImmunizNationPUB\\src\\Client\\ImmunizNation.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\ImmunizNation\\src\\Client\\obj\\",
+      "outputPath": "C:\\Users\\User\\source\\repos\\ImmunizNationPUB\\src\\Client\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -11264,6 +11264,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -11364,7 +11365,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   },
